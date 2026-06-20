@@ -44,22 +44,55 @@ export default function EbookUploadDashboard() {
   }, []);
 
   const verifyPasscodeOnLoad = async () => {
-    // Simple frontend pre-check to let us check statuses if passcode seems valid
-    setUnlocked(true);
-    checkAllFileStatuses();
+    if (!passcode.trim()) return;
+    try {
+      const res = await fetch(getApiUrl("/api/admin/verify-passcode"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ passcode })
+      });
+      if (res.ok) {
+        setUnlocked(true);
+        checkAllFileStatuses();
+      } else {
+        localStorage.removeItem("ebook_admin_passcode");
+        setUnlocked(false);
+      }
+    } catch (e) {
+      localStorage.removeItem("ebook_admin_passcode");
+      setUnlocked(false);
+    }
   };
 
-  const handleUnlock = (e: React.FormEvent) => {
+  const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!passcode.trim()) {
       setPasscodeError("Please enter a passcode.");
       return;
     }
-    // We strictly verify the passcode in the backend on uploads, but can do a pre-verify too or unlock locally.
-    localStorage.setItem("ebook_admin_passcode", passcode);
-    setUnlocked(true);
     setPasscodeError("");
-    checkAllFileStatuses();
+    try {
+      const res = await fetch(getApiUrl("/api/admin/verify-passcode"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ passcode })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        localStorage.setItem("ebook_admin_passcode", passcode);
+        setUnlocked(true);
+        checkAllFileStatuses();
+      } else {
+        setPasscodeError(data.error || "Incorrect passcode. Please check your credentials.");
+        setUnlocked(false);
+      }
+    } catch (err: any) {
+      setPasscodeError("Network error. Failed to verify passcode.");
+    }
   };
 
   const logout = () => {
