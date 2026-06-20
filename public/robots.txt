@@ -1,0 +1,19 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+
+# Disallow administrative/dashboard areas
+Disallow: /ebooks/upload-dashboard
+
+# Disallow payment confirmation checkouts and simulator fallback links
+Disallow: /checkout/instamojo-mock
+Disallow: /api/instamojo/callback
+Disallow: /api/instamojo/webhook
+
+# Disallow Thank You post-purchase screens to avoid indexing mock orders
+Disallow: /thank-you
+
+# Allow crawling of all standard content pages
+Allow: /
+
+# Sitemap Location
+Sitemap: https://drnishanti.com/sitemap.xml

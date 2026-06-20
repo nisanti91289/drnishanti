@@ -1,0 +1,10 @@
+{
+  "name": "Nishanti's Skin Hair & Ozone",
+  "description": "Premium Skin, Hair, and Ozone Therapy clinic in Ahmedabad specializing in modern techniques and Ozone care.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
