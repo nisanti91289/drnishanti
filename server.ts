@@ -823,6 +823,17 @@ app.get("/api/ebooks/download-check/:id", (req, res) => {
   return res.status(404).json({ exists: false, error: "Real PDF file not uploaded yet on server" });
 });
 
+// Verify admin passcode endpoint
+app.post("/api/admin/verify-passcode", (req, res) => {
+  const { passcode } = req.body;
+  const requiredPasscode = process.env.ADMIN_EBOOK_PASSCODE || "admin123";
+  if (passcode === requiredPasscode) {
+    return res.status(200).json({ success: true });
+  } else {
+    return res.status(401).json({ success: false, error: "Incorrect passcode. Please check your credentials." });
+  }
+});
+
 // Passcode-protected endpoint for direct PDF replaces (upload dashboard)
 app.post("/api/admin/upload-ebook", (req, res) => {
   const { passcode, ebookId, fileData } = req.body;
