@@ -86,7 +86,7 @@ export function Navbar() {
               DR. NISHANTI'S
             </span>
             <span className={`text-[10px] ml-[5px] font-medium tracking-widest uppercase ${scrolled ? "text-brand-pink" : "text-brand-pink md:text-white/80"}`}>
-              Skin Hair & Ozone
+              Skin Hair & Wellness
             </span>
           </div>
         </Link>
@@ -286,7 +286,7 @@ export function Footer() {
                 DR. NISHANTI'S
               </span>
               <span className="text-[10px] font-medium tracking-widest uppercase text-brand-pink">
-                Skin Hair & Ozone
+                Skin Hair & Wellness
               </span>
             </div>
           </div>
@@ -391,7 +391,7 @@ export function Footer() {
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-xs text-gray-500">
-        <p>&copy; {new Date().getFullYear()} Dr. Nishanti's Skin Hair & Ozone. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Dr. Nishanti's Skin Hair & Wellness. All rights reserved.</p>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
           <Link to="/privacy-policy" className="hover:text-white hover:underline transition-colors duration-200">
             Privacy Policy
