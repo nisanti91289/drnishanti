@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { Zap, Sparkles, Droplets, Smile, CheckCircle, ArrowRight } from "lucide-react";
 
@@ -109,9 +110,9 @@ export default function Treatments() {
                       <p className="text-xs text-gray-500">Effective for joint, nerve and muscle pains.</p>
                    </div>
                 </div>
-                <button className="px-10 py-4 bg-brand-gold text-brand-dark rounded-xl font-bold flex items-center gap-2 hover:bg-white transition-all shadow-xl shadow-brand-gold/10">
-                   Learn More About Ozone <ArrowRight size={18} />
-                </button>
+                 <Link to="/contact" className="px-10 py-4 bg-brand-gold text-brand-dark rounded-xl font-bold inline-flex items-center gap-2 hover:bg-white transition-all shadow-xl shadow-brand-gold/10">
+                    Learn More About Ozone <ArrowRight size={18} />
+                 </Link>
               </div>
               
               <div className="relative hidden md:block">
