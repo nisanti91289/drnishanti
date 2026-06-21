@@ -48,7 +48,7 @@ export default function Home() {
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-bold text-white leading-[1.1]">
-              Advanced <span className="text-brand-gold">Skin, Hair</span> & Ozone Therapy
+              Advanced <span className="text-brand-gold">Skin, Hair</span> & Pain Management
             </h1>
             
             <p className="text-lg text-white/80 leading-relaxed max-w-lg font-light">
