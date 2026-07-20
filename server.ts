@@ -837,6 +837,20 @@ app.get("/api/admin/list-pdfs", (req, res) => {
   }
 });
 
+// Temporary debug endpoint to list orders
+app.get("/api/admin/list-orders", (req, res) => {
+  const backupPath = path.join(process.cwd(), "orders.json");
+  try {
+    if (fs.existsSync(backupPath)) {
+      const fileContent = fs.readFileSync(backupPath, "utf-8");
+      return res.json({ success: true, orders: JSON.parse(fileContent || "[]") });
+    }
+    return res.json({ success: false, error: "orders.json not found" });
+  } catch (err: any) {
+    return res.json({ success: false, error: err.message });
+  }
+});
+
 // Verify admin passcode endpoint
 app.post("/api/admin/verify-passcode", (req, res) => {
   const { passcode } = req.body;
