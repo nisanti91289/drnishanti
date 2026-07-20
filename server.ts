@@ -823,6 +823,20 @@ app.get("/api/ebooks/download-check/:id", (req, res) => {
   return res.status(404).json({ exists: false, error: "Real PDF file not uploaded yet on server" });
 });
 
+// Temporary debug endpoint to list PDFs on server filesystem
+app.get("/api/admin/list-pdfs", (req, res) => {
+  const pdfDir = path.join(process.cwd(), "public", "pdfs");
+  try {
+    if (fs.existsSync(pdfDir)) {
+      const files = fs.readdirSync(pdfDir);
+      return res.json({ success: true, files });
+    }
+    return res.json({ success: false, error: "pdfs directory not found" });
+  } catch (err: any) {
+    return res.json({ success: false, error: err.message });
+  }
+});
+
 // Verify admin passcode endpoint
 app.post("/api/admin/verify-passcode", (req, res) => {
   const { passcode } = req.body;
