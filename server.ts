@@ -6,6 +6,25 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import fs from "fs";
 
+// Console log capture for Render live debugging
+export const logBuffer: string[] = [];
+const originalLog = console.log;
+const originalError = console.error;
+
+console.log = (...args: any[]) => {
+  const msg = args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" ");
+  logBuffer.push(`[LOG] ${new Date().toISOString()}: ${msg}`);
+  if (logBuffer.length > 800) logBuffer.shift();
+  originalLog(...args);
+};
+
+console.error = (...args: any[]) => {
+  const msg = args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" ");
+  logBuffer.push(`[ERROR] ${new Date().toISOString()}: ${msg}`);
+  if (logBuffer.length > 800) logBuffer.shift();
+  originalError(...args);
+};
+
 // Safe load dotenv without override so platform-level variables (e.g. Cloud Run env variables) are NEVER overwritten
 dotenv.config();
 
@@ -906,6 +925,12 @@ app.get("/api/admin/inspect-database", (req, res) => {
     latestOrders: Array.isArray(orders) ? orders.slice(-5) : [],
     sheetStatus
   });
+});
+
+// Temporary endpoint to read live console logs
+app.get("/api/admin/logs", (req, res) => {
+  res.setHeader("Content-Type", "text/plain");
+  return res.send(logBuffer.join("\n"));
 });
 
 // Verify admin passcode endpoint
