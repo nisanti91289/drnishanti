@@ -797,7 +797,7 @@ const EBOOK_FILE_MAP: Record<string, string> = {
   "eb-impress-partner": "21 Day Plan to Impress Your Husband  Boyfriend.pdf",
   "eb-better-sleep": "21 days better sleep routine.pdf",
   "eb-diabetes-care": "21 Days Diabetes Care & Control Plan.pdf",
-  "eb-failure-comeback": "21 Days From Failure to Comeback A Personal Growth Journey in Hindi.pdf",
+  "eb-failure-comeback": "21 Days From Failure to Comeback A Personal Growth Journey.pdf",
   "eb-weight-loss-en": "21 Days Doctor Guided Weight Loss Transformation Plan in English.pdf",
   "eb-weight-loss-hi": "21 Days Doctor Guided Weight Loss Transformation Plan in Hindi.pdf"
 };
