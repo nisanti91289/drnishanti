@@ -837,6 +837,20 @@ app.get("/api/admin/list-pdfs", (req, res) => {
   }
 });
 
+// Temporary raw text endpoint to check casing
+app.get("/api/admin/list-pdfs-raw", (req, res) => {
+  const pdfDir = path.join(process.cwd(), "public", "pdfs");
+  try {
+    if (fs.existsSync(pdfDir)) {
+      const files = fs.readdirSync(pdfDir);
+      return res.send(files.join("\n"));
+    }
+    return res.send("Directory not found");
+  } catch (err: any) {
+    return res.send("Error: " + err.message);
+  }
+});
+
 // Temporary debug endpoint to list orders
 app.get("/api/admin/list-orders", (req, res) => {
   const backupPath = path.join(process.cwd(), "orders.json");
