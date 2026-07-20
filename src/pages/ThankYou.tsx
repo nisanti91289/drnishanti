@@ -109,15 +109,10 @@ export default function ThankYou() {
                 setIsDownloading(false);
                 setDownloadCompleted(true);
 
-                // Triggers direct browser download of the real uploaded file
-                const link = document.createElement("a");
-                link.href = getApiUrl(`/api/download-ebook/${bookId}`);
-                link.setAttribute("download", checkData.fileName || "eBook.pdf");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }
-            }, 100);
+                 // Triggers direct browser download bypassing React Router client-side interception
+                 window.location.href = getApiUrl(`/api/download-ebook/${bookId}?paymentId=${displayDetails.paymentId}`);
+               }
+             }, 100);
             return;
           }
         }

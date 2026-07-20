@@ -4,6 +4,7 @@ import {
   ShieldCheck, Lock, CreditCard, Smartphone, Landmark, 
   HelpCircle, AlertCircle, ArrowRight, CheckCircle, Flame
 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 export default function InstamojoMock() {
   const location = useLocation();
@@ -21,6 +22,7 @@ export default function InstamojoMock() {
   const isEbook = searchParams.get("isEbook") || "false";
   const ebookId = searchParams.get("ebookId") || "";
   const ebookTheme = searchParams.get("ebookTheme") || "";
+  const frontendUrl = searchParams.get("frontendUrl") || "";
 
   // Payment methods
   const [selectedMethod, setSelectedMethod] = useState<"upi" | "card" | "net">("upi");
@@ -54,12 +56,13 @@ export default function InstamojoMock() {
       amount,
       isEbook,
       ebookId,
-      ebookTheme
+      ebookTheme,
+      frontendUrl
     }).toString();
 
     setTimeout(() => {
       // Redirect to backend callback endpoint which persists the transaction and forwards to thank-you!
-      window.location.href = `/api/instamojo/callback?${callbackParams}`;
+      window.location.href = getApiUrl(`/api/instamojo/callback?${callbackParams}`);
     }, 1500);
   };
 
