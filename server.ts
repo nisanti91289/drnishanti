@@ -1005,17 +1005,21 @@ app.get("/api/download-ebook/:id", (req, res) => {
   const { paymentId, payment_id, adminPasscode } = req.query;
   const targetPaymentId = (paymentId || payment_id) as string;
 
+  console.log(`[DOWNLOAD GATEWAY] Request for Book ID: ${id}, paymentId: ${paymentId}, payment_id: ${payment_id}, adminPasscode: ${adminPasscode ? 'PROVIDED' : 'NONE'}`);
+
   let isVerified = false;
 
   // Check if admin passcode is provided and correct (bypasses payment verification for dashboard downloads)
   const requiredPasscode = process.env.ADMIN_EBOOK_PASSCODE || "admin123";
   if (adminPasscode && adminPasscode === requiredPasscode) {
+    console.log(`[DOWNLOAD GATEWAY] Admin passcode verification success.`);
     isVerified = true;
   }
 
   if (!isVerified) {
     // 1. Enforce validation parameter
     if (!targetPaymentId) {
+      console.log(`[DOWNLOAD GATEWAY] Rejected: Missing targetPaymentId.`);
       return res.status(403).send("Forbidden: Valid transaction/payment ID required to download.");
     }
 
@@ -1029,6 +1033,7 @@ app.get("/api/download-ebook/:id", (req, res) => {
         item => item.order?.paymentId === targetPaymentId && item.status === "PAID"
       );
       if (cached) {
+        console.log(`[DOWNLOAD GATEWAY] Verified via sheetStatusCache.`);
         isVerified = true;
       }
 
@@ -1040,6 +1045,7 @@ app.get("/api/download-ebook/:id", (req, res) => {
           (o: any) => o.paymentId === targetPaymentId && o.status === "PAID"
         );
         if (matchedOrder) {
+          console.log(`[DOWNLOAD GATEWAY] Verified via orders.json backup.`);
           isVerified = true;
         }
       }
@@ -1050,8 +1056,11 @@ app.get("/api/download-ebook/:id", (req, res) => {
 
   // Block unauthorized direct downloads
   if (!isVerified) {
+    console.log(`[DOWNLOAD GATEWAY] Access Forbidden for paymentId: ${targetPaymentId}`);
     return res.status(403).send("Forbidden: Unauthorized or unpaid transaction ID.");
   }
+
+  console.log(`[DOWNLOAD GATEWAY] Serving PDF file for book: ${id}`);
 
   const fileName = EBOOK_FILE_MAP[id];
   if (!fileName) {
