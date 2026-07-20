@@ -889,9 +889,51 @@ app.post("/api/admin/upload-ebook", (req, res) => {
   }
 });
 
-// Download endpoint for the real PDF
+// Download endpoint for the real PDF (secured with payment verification)
 app.get("/api/download-ebook/:id", (req, res) => {
   const { id } = req.params;
+  const { paymentId, payment_id } = req.query;
+  const targetPaymentId = (paymentId || payment_id) as string;
+
+  // 1. Enforce validation parameter
+  if (!targetPaymentId) {
+    return res.status(403).send("Forbidden: Valid transaction/payment ID required to download.");
+  }
+
+  // 2. Validate transaction status on server records
+  const backupPath = path.join(process.cwd(), "orders.json");
+  let isVerified = false;
+
+  try {
+    // Check local sheetStatusCache first (recent memory cache)
+    loadSheetStatusCache();
+    const cached = Object.values(sheetStatusCache).find(
+      item => item.order?.paymentId === targetPaymentId && item.status === "PAID"
+    );
+    if (cached) {
+      isVerified = true;
+    }
+
+    // Check backup JSON database
+    if (!isVerified && fs.existsSync(backupPath)) {
+      const fileContent = fs.readFileSync(backupPath, "utf-8");
+      const orders = JSON.parse(fileContent || "[]");
+      const matchedOrder = orders.find(
+        (o: any) => o.paymentId === targetPaymentId && o.status === "PAID"
+      );
+      if (matchedOrder) {
+        isVerified = true;
+      }
+    }
+  } catch (err) {
+    console.error("Download verification process encountered an error:", err);
+  }
+
+  // Block unauthorized direct downloads
+  if (!isVerified) {
+    return res.status(403).send("Forbidden: Unauthorized or unpaid transaction ID.");
+  }
+
   const fileName = EBOOK_FILE_MAP[id];
   if (!fileName) {
     return res.status(404).send("eBook mapping not found");
