@@ -851,6 +851,49 @@ app.get("/api/admin/list-orders", (req, res) => {
   }
 });
 
+// Comprehensive database and permission inspection endpoint
+app.get("/api/admin/inspect-database", (req, res) => {
+  const ordersPath = path.join(process.cwd(), "orders.json");
+  const statusPath = path.join(process.cwd(), "sheet_status.json");
+  const testWritePath = path.join(process.cwd(), "test_write.json");
+  
+  let writeTest = "untested";
+  try {
+    fs.writeFileSync(testWritePath, JSON.stringify({ success: true, time: Date.now() }), "utf-8");
+    if (fs.existsSync(testWritePath)) {
+      writeTest = "success";
+      fs.unlinkSync(testWritePath);
+    }
+  } catch (e: any) {
+    writeTest = `failed: ${e.message || e}`;
+  }
+
+  let orders = [];
+  try {
+    if (fs.existsSync(ordersPath)) {
+      orders = JSON.parse(fs.readFileSync(ordersPath, "utf-8") || "[]");
+    }
+  } catch (e: any) {
+    orders = [`error: ${e.message}`];
+  }
+
+  let sheetStatus = {};
+  try {
+    if (fs.existsSync(statusPath)) {
+      sheetStatus = JSON.parse(fs.readFileSync(statusPath, "utf-8") || "{}");
+    }
+  } catch (e: any) {
+    sheetStatus = { error: e.message };
+  }
+
+  res.json({
+    writeTest,
+    ordersLength: Array.isArray(orders) ? orders.length : 0,
+    latestOrders: Array.isArray(orders) ? orders.slice(-5) : [],
+    sheetStatus
+  });
+});
+
 // Verify admin passcode endpoint
 app.post("/api/admin/verify-passcode", (req, res) => {
   const { passcode } = req.body;
